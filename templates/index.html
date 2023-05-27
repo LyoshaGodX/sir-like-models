@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Epidemic Model Plot</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+            crossorigin="anonymous"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script>
+        MathJax = {tex: {inlineMath: [['$', '$'], ['\\(', '\\)']]}};
+    </script>
+</head>
+<body>
+<div>
+    <div class="container text-center mt-5">
+        <form id="modelForm">
+            <div class="row">
+                <div class="col-sm-12 col-xxl-3 bg-secondary-subtle">
+                    <div class="row mt-3">
+                        <div class="col-5 pe-0">
+                            <div class="input-group">
+                                <button id="populationButton" type="button" class="btn btn-secondary"
+                                        data-bs-toggle="popover"
+                                        data-bs-title="Размер популяции $N$"
+                                        data-bs-content="">
+                                    $N$
+                                </button>
+                                <label class="input-group-text justify-content-center"
+                                       for="populationSlider" id="populationLabel">5398K</label>
+                            </div>
+                        </div>
+                        <div class="col-7 d-flex align-items-center ps-0">
+                            <input type="range" class="form-range " id="populationSlider" name="population"
+                                   min="1000000"
+                                   max="9990000"
+                                   value="5398064"
+                                   step="100000">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-5 pe-0">
+                            <div class="input-group">
+                                <button id="timeButton" type="button" class="btn btn btn-secondary"
+                                        data-bs-toggle="popover"
+                                        data-bs-title="Время симуляции $t$"
+                                        data-bs-content="">
+                                    $t$
+                                </button>
+                                <label for="timeSlider" class="input-group-text justify-content-center"
+                                       id="timeLabel">720</label>
+                            </div>
+                        </div>
+                        <div class="col-7 d-flex align-items-center ps-0">
+                            <input type="range" class="form-range" id="timeSlider" name="time" min="180" max="1800"
+                                   value="720"
+                                   step="20">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-5 pe-0">
+                            <div class="input-group">
+                                <button id="SButton" type="button" class="btn btn btn-secondary"
+                                        data-bs-toggle="popover"
+                                        data-bs-title="Начальное восприимчивое население $S$"
+                                        data-bs-content="">
+                                    $S$
+                                </button>
+                                <label for="SSlider" class="input-group-text justify-content-center"
+                                       id="SLabel">5398K</label>
+                            </div>
+                        </div>
+                        <div class="col-7 d-flex align-items-center ps-0">
+                            <input type="range" class="form-range" id="SSlider" name="S" min="1000000"
+                                   max="9990000"
+                                   value="5398064"
+                                   step="100000">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-5 pe-0">
+                            <div class="input-group">
+                                <button id="EButton" type="button" class="btn btn btn-secondary"
+                                        data-bs-toggle="popover"
+                                        data-bs-title="Начальное подвергнутое население $E$"
+                                        data-bs-content="">
+                                    $E$
+                                </button>
+                                <label for="ESlider" class="input-group-text justify-content-center"
+                                       id="ELabel">0</label>
+                            </div>
+                        </div>
+                        <div class="col-7 d-flex align-items-center ps-0">
+                            <input type="range" class="form-range" id="ESlider" name="E" min="0" max="1000" value="0"
+                                   step="10">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-5 pe-0">
+                            <div class="input-group">
+                                <button id="IButton" type="button" class="btn btn btn-secondary"
+                                        data-bs-toggle="popover"
+                                        data-bs-title="Начальное количество инфицированных $I$"
+                                        data-bs-content="">
+                                    $I$
+                                </button>
+                                <label for="ISlider" class="input-group-text justify-content-center"
+                                       id="ILabel">1</label>
+                            </div>
+                        </div>
+                        <div class="col-7 d-flex align-items-center ps-0">
+                            <input type="range" class="form-range" id="ISlider" name="I" min="1" max="1000" value="1"
+                                   step="10">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-5 pe-0">
+                            <div class="input-group">
+                                <button id="RButton" type="button" class="btn btn btn-secondary"
+                                        data-bs-toggle="popover"
+                                        data-bs-title="начальное количество выздоровевших $R$"
+                                        data-bs-content="">
+                                    $R$
+                                </button>
+                                <label for="RSlider" class="input-group-text justify-content-center"
+                                       id="RLabel">0</label>
+                            </div>
+                        </div>
+                        <div class="col-7 d-flex align-items-center ps-0">
+                            <input type="range" class="form-range" id="RSlider" name="R" min="0" max="1000" value="0"
+                                   step="10">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-5 pe-0">
+                            <div class="input-group">
+                                <button id="DButton" type="button" class="btn btn btn-secondary"
+                                        data-bs-toggle="popover"
+                                        data-bs-title="Начальное количество погибших $D$"
+                                        data-bs-content="">
+                                    $D$
+                                </button>
+                                <label for="DSlider" class="input-group-text justify-content-center"
+                                       id="DLabel">0</label>
+                            </div>
+                        </div>
+                        <div class="col-7 d-flex align-items-center ps-0">
+                            <input type="range" class="form-range" id="DSlider" name="D" min="0" max="1000" value="0"
+                                   step="10">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-5 pe-0">
+                            <div class="input-group">
+                                <button id="R0Button" type="button" class="btn btn btn-secondary"
+                                        data-bs-toggle="popover"
+                                        data-bs-title="Базовый коэффициент репродукции $R_{0}$"
+                                        data-bs-content="">
+                                    $R_{0}$
+                                </button>
+                                <label for="R0Slider" class="input-group-text justify-content-center"
+                                       id="R0Label">1.7804</label>
+                            </div>
+                        </div>
+                        <div class="col-7 d-flex align-items-center ps-0">
+                            <input type="range" class="form-range" id="R0Slider" name="R0" min="1.4" max="5.7"
+                                   value="1.7804237535925675"
+                                   step="any">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-5 pe-0">
+                            <div class="input-group">
+                                <button id="gammaButton" type="button" class="btn btn btn-secondary"
+                                        data-bs-toggle="popover"
+                                        data-bs-title="Коэффициент выздоровления $\gamma$"
+                                        data-bs-content="">
+                                    $\gamma$
+                                </button>
+                                <label for="gammaSlider" class="input-group-text justify-content-center"
+                                       id="gammaLabel">18</label>
+                            </div>
+                        </div>
+                        <div class="col-7 d-flex align-items-center ps-0">
+                            <input type="range" class="form-range" id="gammaSlider" name="gamma" min="4" max="18"
+                                   value="18">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-5 pe-0">
+                            <div class="input-group">
+                                <button id="sigmaButton" type="button" class="btn btn btn-secondary"
+                                        data-bs-toggle="popover"
+                                        data-bs-title="Коэффициент инкубационного периода $\sigma$"
+                                        data-bs-content="">
+                                    $\sigma$
+                                </button>
+                                <label for="sigmaSlider" class="input-group-text justify-content-center"
+                                       id="sigmaLabel">2</label>
+                            </div>
+                        </div>
+                        <div class="col-7 d-flex align-items-center ps-0">
+                            <input type="range" class="form-range" id="sigmaSlider" name="sigma" min="2" max="14"
+                                   value="2">
+                        </div>
+                    </div>
+
+                    <div class="row mt-3 mb-3">
+                        <div class="col-5 pe-0">
+                            <div class="input-group">
+                                <button id="muButton" type="button" class="btn btn btn-secondary"
+                                        data-bs-toggle="popover"
+                                        data-bs-title="Коэффициент летальности $\mu$"
+                                        data-bs-content="">
+                                    $\mu$
+                                </button>
+                                <label for="muSlider" class="input-group-text justify-content-center"
+                                       id="muLabel">1</label>
+                            </div>
+                        </div>
+                        <div class="col-7 d-flex align-items-center ps-0">
+                            <input type="range" class="form-range" id="muSlider" name="mu" min="0.1" max="3.0" value="1"
+                                   step="any">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-xxl-9 mt-sm-5 mt-xxl-0">
+                    <div class="row">
+                        <div class="input-group input-group-sm justify-content-center">
+                            <label class="input-group-text">Выберите модель</label>
+
+                            <input type="radio" class="btn-check" name="selected-model" id="SIR" autocomplete="off"
+                                   checked="" value="SIR">
+                            <label class="btn btn-outline-secondary" for="SIR">SIR</label>
+
+                            <input type="radio" class="btn-check" name="selected-model" id="SEIR" autocomplete="off"
+                                   value="SEIR">
+                            <label class="btn btn-outline-secondary" for="SEIR">SEIR</label>
+
+                            <input type="radio" class="btn-check" name="selected-model" id="SEIRD" autocomplete="off"
+                                   value="SEIRD">
+                            <label class="btn btn-outline-secondary" for="SEIRD">SEIRD</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div id="plotDiv"></div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(window).on('load', function () {
+        $(document).ready(function () {
+
+            const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+            const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
+
+            const buttons = [
+                'populationButton',
+                'timeButton',
+                'SButton',
+                'EButton',
+                'IButton',
+                'RButton',
+                'DButton',
+                'R0Button',
+                'gammaButton',
+                'sigmaButton',
+                'muButton']
+
+            for (let button in buttons) {
+                document.getElementById(buttons[button]).addEventListener('shown.bs.popover', function () {
+                    MathJax.typeset();
+                });
+            }
+
+            // Function to update the chart
+            function updateChart() {
+                var R0 = parseFloat($('#R0Slider').val());
+                var gamma = parseFloat($('#gammaSlider').val());
+                var sigma = parseFloat($('#sigmaSlider').val());
+                var mu = parseFloat($('#muSlider').val());
+
+                var formData = {
+                    'model': $('input[name="selected-model"]:checked').val(),
+                    'population': parseFloat($('#populationSlider').val()),
+                    'time': parseInt($('#timeSlider').val()),
+                    'S': parseFloat($('#SSlider').val()),
+                    'E': parseFloat($('#ESlider').val()),
+                    'I': parseFloat($('#ISlider').val()),
+                    'R': parseFloat($('#RSlider').val()),
+                    'D': parseFloat($('#DSlider').val()),
+                    'R0': R0,
+                    'gamma': 1 / gamma,
+                    'sigma': 1 / sigma,
+                    'mu': 1 / (mu * 1000)
+                };
+
+                // Send an AJAX request to update the plot
+                $.ajax({
+                    url: '/update_plot',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function (data) {
+                        var plotData = JSON.parse(data);
+                        var traces = [];
+
+                        // Create trace objects for each variable
+                        if (plotData.S) {
+                            var traceS = {
+                                x: plotData.time,
+                                y: plotData.S,
+                                mode: 'lines',
+                                name: 'Susceptible',
+                                line: {
+                                    color: 'blue'
+                                }
+
+                            };
+                            traces.push(traceS);
+                        }
+
+                        if (plotData.E) {
+                            var traceE = {
+                                x: plotData.time,
+                                y: plotData.E,
+                                mode: 'lines',
+                                name: 'Exposed',
+                                line: {
+                                    color: 'orange'
+                                }
+                            };
+                            traces.push(traceE);
+                        }
+
+                        if (plotData.I) {
+                            var traceI = {
+                                x: plotData.time,
+                                y: plotData.I,
+                                mode: 'lines',
+                                name: 'Infected',
+                                line: {
+                                    color: 'red'
+                                }
+                            };
+                            traces.push(traceI);
+                        }
+
+                        if (plotData.R) {
+                            var traceR = {
+                                x: plotData.time,
+                                y: plotData.R,
+                                mode: 'lines',
+                                name: 'Recovered',
+                                line: {
+                                    color: 'green'
+                                }
+                            };
+                            traces.push(traceR);
+                        }
+
+                        if (plotData.D) {
+                            var traceD = {
+                                x: plotData.time,
+                                y: plotData.D,
+                                mode: 'lines',
+                                name: 'Deceased',
+                                line: {
+                                    color: 'black'
+                                }
+                            };
+                            traces.push(traceD);
+                        }
+
+                        var layout = {
+                            title: $('input[name="selected-model"]:checked').val() + ' model',
+                            xaxis: {title: 'Time'},
+                            yaxis: {title: 'Population'}
+                        };
+
+                        Plotly.newPlot('plotDiv', [], {});
+
+                        // Update the chart with the new traces
+                        Plotly.newPlot('plotDiv', traces, layout);
+
+                    }
+                });
+            }
+
+            $('input[name="selected-model"]').change(function () {
+                if (this.checked) {
+                    updateChart();
+                }
+            });
+
+            const sliderLabels = {
+                '#populationSlider': '#populationLabel',
+                '#timeSlider': '#timeLabel',
+                '#SSlider': '#SLabel',
+                '#ESlider': '#ELabel',
+                '#ISlider': '#ILabel',
+                '#RSlider': '#RLabel',
+                '#DSlider': '#DLabel',
+                '#R0Slider': '#R0Label',
+                '#gammaSlider': '#gammaLabel',
+                '#sigmaSlider': '#sigmaLabel',
+                '#muSlider': '#muLabel'
+            };
+
+            function updateLabels() {
+                for (let slider in sliderLabels) {
+                    let sliderId = slider;
+                    let labelId = sliderLabels[slider];
+
+                    if (sliderId === '#populationSlider' || sliderId === '#SSlider') {
+                        $(sliderId).on('input', function () {
+                            $(labelId).text((Math.floor(parseFloat($(sliderId).val()) / 1000)).toString() + 'K');
+                        });
+                        continue
+                    }
+
+                    if (sliderId === '#R0Slider' || sliderId === '#muSlider') {
+                        $(sliderId).on('input', function () {
+                            $(labelId).text(parseFloat($(sliderId).val()).toFixed(4));
+                        });
+                        continue
+                    }
+
+                    $(sliderId).on('input', function () {
+                        $(labelId).text($(sliderId).val());
+                    });
+                }
+            }
+
+            // Event handlers for slider changes
+            $('#R0Slider, #gammaSlider, #sigmaSlider, #muSlider, #populationSlider, #timeSlider, #SSlider, #ESlider, #ISlider, #RSlider, #DSlider').on('input', function () {
+                updateLabels();
+                updateChart();  // Update the chart when any slider value changes
+            });
+
+            // Initial chart update
+            updateChart();
+        })
+        ;
+    });
+
+</script>
+</body>
+</html>
