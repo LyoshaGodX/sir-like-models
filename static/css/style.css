@@ -1,0 +1,665 @@
+:root {
+  /* Основные цвета */
+  --primary: #2563eb;
+  --primary-light: #3b82f6;
+  --primary-dark: #1d4ed8;
+  --secondary: #06b6d4;
+  --accent: #f97316;
+  
+  /* Нейтральные цвета */
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-highlight: #f1f5f9;
+  --border: #e2e8f0;
+  --muted: #64748b;
+  
+  /* Цвета компонентов модели */
+  --color-s: #2563eb; /* синий */
+  --color-e: #f97316; /* оранжевый */
+  --color-i: #dc2626; /* красный */
+  --color-r: #16a34a; /* зеленый */
+  --color-d: #9333ea; /* фиолетовый */
+  
+  /* Радиусы */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  
+  /* Тени */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* Анимации */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Сброс стилей и основные настройки */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  line-height: 1.5;
+  font-size: 16px;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Контейнер страницы */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f6f9ff 0%, #e9f3ff 100%);
+}
+
+.container {
+  flex: 1;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem; /* уменьшенные отступы для компактности */
+}
+
+/* Заголовок */
+.app-header {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary) 100%);
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.app-header::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  right: 0;
+  height: 20px;
+  background: linear-gradient(
+    135deg,
+    transparent 33.33%,
+    var(--background) 33.33%,
+    var(--background) 66.66%,
+    transparent 66.66%
+  );
+  background-size: 20px 100%;
+}
+
+.header-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.app-header h1 {
+  font-size: 2.75rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.025em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.app-header .tagline {
+  font-size: 1.15rem;
+  opacity: 0.9;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Сетка для модели */
+.model-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 25%) 1fr;
+  gap: 1.25rem;
+  position: relative;
+  align-items: stretch;
+  height: calc(100vh - 160px); /* значительно уменьшаем отступ для увеличения высоты */
+  min-height: 800px; /* увеличиваем минимальную высоту */
+  max-height: none;
+  overflow: visible;
+}
+
+/* Секция контролей */
+.control-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%; /* занимает всю высоту родительского грида */
+  min-height: 0;
+  max-height: none; /* убираем ограничение максимальной высоты */
+  overflow: hidden; /* скрываем прокрутку на уровне контейнера */
+}
+
+.control-section h2 {
+  font-size: 1.15rem; /* уменьшен размер заголовка */
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: var(--primary-dark);
+}
+
+/* Выбор модели */
+.model-selector-container {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  padding: 1rem; /* уменьшенный внутренний отступ */
+  box-shadow: var(--shadow-md);
+  flex-shrink: 0; /* не сжимать при нехватке места */
+}
+
+/* Сетка для вкладок моделей */
+.model-tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.model-tab {
+  flex: 1 1 0;
+  min-width: 0;
+  position: relative;
+  cursor: pointer;
+  display: flex;
+}
+
+.model-tab input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.tab-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 120px;
+  min-height: 80px;
+  height: 100%;
+  padding: 1rem 0.75rem;
+  background-color: var(--card-highlight);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-normal);
+  border: 2px solid transparent;
+  text-align: center;
+  box-sizing: border-box;
+  /* Для одинаковой высоты */
+  flex: 1 1 0;
+}
+
+.tab-name {
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.tab-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.model-tab input:checked + .tab-label {
+  border-color: var(--primary);
+  background-color: rgba(37, 99, 235, 0.1);
+  box-shadow: var(--shadow-sm);
+}
+
+.model-tab:hover .tab-label {
+  background-color: var(--card-highlight);
+  transform: translateY(-2px);
+}
+
+/* Карточки параметров */
+.parameter-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  box-shadow: var(--shadow-md);
+  flex: 1; /* растягивается, заполняя доступное пространство */
+  min-height: 0; /* разрешает сжатие при необходимости */
+  max-height: none; /* убираем ограничение */
+  overflow-y: auto; /* только внутри параметров есть прокрутка */
+}
+
+.parameter-card {
+  background-color: var(--card-highlight);
+  border-radius: var(--radius-md);
+  padding: 0.75rem; /* уменьшенный внутренний отступ */
+  transition: all var(--transition-normal);
+}
+
+.parameter-card:hover {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+}
+
+.parameter-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem; /* уменьшенный отступ */
+  margin-bottom: 0.5rem; /* уменьшенный нижний отступ */
+  /* Позволяет гибко управлять шириной */
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.param-icon {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: white;
+  font-weight: 700;
+  font-size: 1.15rem;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast);
+}
+
+.parameter-card:hover .param-icon {
+  transform: scale(1.1);
+}
+
+.param-info {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  cursor: pointer;
+}
+
+.param-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.param-hint {
+  font-size: 0.92rem;
+  color: var(--muted);
+  background: linear-gradient(90deg, var(--card-highlight) 60%, transparent 100%);
+  border-radius: var(--radius-sm);
+  padding: 0.35em 0.7em;
+  margin-top: 0.15em;
+  margin-bottom: 0.1em;
+  opacity: 0.85;
+  transition: background 0.25s, color 0.25s, opacity 0.25s;
+  font-style: italic;
+  box-shadow: 0 1px 4px 0 rgba(37,99,235,0.04);
+  will-change: background, color, opacity;
+  pointer-events: none;
+  max-width: 100%;
+  word-break: break-word;
+  white-space: normal;
+  line-height: 1.35;
+}
+
+/* Убираем акцент с param-hint при наведении */
+.parameter-card:hover .param-hint {
+  background: linear-gradient(90deg, var(--card-highlight) 60%, transparent 100%);
+  color: var(--muted);
+  opacity: 0.85;
+  font-style: italic;
+  box-shadow: 0 1px 4px 0 rgba(37,99,235,0.04);
+}
+
+/* Новый акцент на param-value при наведении */
+.parameter-card .param-value {
+  flex: 0 0 auto;
+  margin-left: auto;
+  transition: background 0.25s, color 0.25s, opacity 0.25s, box-shadow 0.25s, transform 0.25s;
+  background: none;
+  color: var(--foreground);
+  border-radius: var(--radius-sm);
+  padding: 0.35em 0.7em;
+  font-weight: 700;
+  font-size: 1.08rem;
+  box-shadow: none;
+  max-width: 6.5em;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index: 1;
+  position: relative;
+}
+
+.parameter-card:hover .param-value {
+  background: linear-gradient(90deg, var(--primary-light) 40%, var(--secondary) 100%);
+  color: #fff;
+  opacity: 1;
+  box-shadow: 0 2px 8px 0 rgba(37,99,235,0.10);
+  transform: scale(1.08);
+}
+
+/* Слайдеры */
+.slider-container {
+  position: relative;
+  padding: 0.75rem 0;
+}
+
+.slider-track {
+  position: relative;
+  height: 6px;
+  background-color: #e2e8f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.slider-progress {
+  position: absolute;
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+  border-radius: 3px;
+  width: 50%; /* Будет обновляться с помощью JS */
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background: transparent;
+  position: absolute;
+  top: 0.75rem;
+  left: 0;
+  margin: 0;
+  z-index: 10;
+  outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  border: 2px solid var(--primary);
+  margin-top: -6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all var(--transition-fast);
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background-color: var(--primary-light);
+  border-color: white;
+}
+
+.slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  border: 2px solid var(--primary);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all var(--transition-fast);
+}
+
+.slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  background-color: var(--primary-light);
+  border-color: white;
+}
+
+/* Секция визуализации */
+.visualization-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%; /* занимает всю высоту родительского грида */
+  min-height: 0;
+  flex: 1;
+  overflow: hidden; /* скрываем прокрутку на уровне контейнера */
+}
+
+.chart-container {
+  background-color: var(--card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  padding: 1rem;
+  flex: 1; /* занимает доступное пространство */
+  min-height: 0; /* разрешаем сжиматься при необходимости */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.chart-area {
+  width: 100%;
+  height: 100%;
+  flex: 1; /* растягивается, заполняя контейнер графика */
+}
+
+/* Легенда графика */
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem; /* уменьшен отступ */
+  padding: 0.5rem;
+  background-color: var(--card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0; /* не сжимать при нехватке места */
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-md);
+  background-color: var(--card-highlight);
+  transition: all var(--transition-fast);
+}
+
+.legend-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-item[data-component="S"] .legend-color { background-color: var(--color-s); }
+.legend-item[data-component="E"] .legend-color { background-color: var(--color-e); }
+.legend-item[data-component="I"] .legend-color { background-color: var(--color-i); }
+.legend-item[data-component="R"] .legend-color { background-color: var(--color-r); }
+.legend-item[data-component="D"] .legend-color { background-color: var(--color-d); }
+
+.legend-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Индикатор загрузки */
+.loading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-left-color: var(--primary);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Футер */
+.app-footer {
+  background-color: var(--foreground);
+  color: white;
+  text-align: center;
+  padding: 1.25rem; /* уменьшаем отступ футера */
+  font-size: 0.9rem;
+  margin-top: 1.5rem; /* уменьшаем верхний отступ футера */
+}
+
+/* Адаптивность - переработанные медиа-запросы */
+@media (max-width: 1200px) {
+  .model-grid {
+    grid-template-columns: minmax(250px, 30%) 1fr;
+    gap: 1rem;
+    height: calc(100vh - 140px); /* уменьшаем отступ для средних экранов */
+  }
+
+  .chart-container {
+    min-height: 450px;
+  }
+}
+
+@media (max-width: 992px) {
+  .model-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 1.25rem;
+    height: auto; /* автоматическая высота для мобильной версии */
+    min-height: auto;
+  }
+  
+  .control-section {
+    display: grid;
+    grid-template-columns: minmax(250px, 350px) 1fr;
+    gap: 1rem;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+  
+  .visualization-section {
+    height: auto;
+    min-height: 500px;
+    overflow: visible;
+  }
+  
+  .model-selector-container {
+    grid-column: 1 / -1; /* на всю ширину */
+  }
+  
+  .parameter-controls {
+    max-height: 450px; /* ограничение высоты в мобильной версии */
+  }
+
+  .chart-container {
+    min-height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-header h1 {
+    font-size: 2rem;
+  }
+  
+  .app-header .tagline {
+    font-size: 1rem;
+  }
+  
+  .control-section {
+    grid-template-columns: 1fr; /* одна колонка для контролей */
+  }
+  
+  .chart-container {
+    min-height: 350px;
+  }
+}
+
+/* Анимации */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+/* Состояния для параметров моделей */
+.parameter-card.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.parameter-card.active {
+  border-left: 4px solid var(--accent);
+}
+
+.param-value.changing {
+  background-color: var(--accent);
+  transform: scale(1.1);
+}
+
+.model-summary {
+  margin-top: 1rem;
+  background: #ffffff;
+  border-left: 4px solid var(--primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 1.25rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex-shrink: 0; /* не сжимать при нехватке места */
+}
+
+.model-summary:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.model-summary .summary-title {
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--primary-light);
+  padding-bottom: 0.5rem;
+}
+
+.model-summary .summary-eq {
+  margin: 0.5rem 0; /* уменьшенный отступ сверху и снизу */
+  text-align: center;
+  background: var(--card);
+  padding: 0.75rem; /* уменьшенный внутренний отступ */
+  border-radius: var(--radius-sm);
+}
+
+.model-summary .summary-desc {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin-top: 1rem;
+}

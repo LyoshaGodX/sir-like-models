@@ -7,7 +7,7 @@ from sir_model import sir_model
 from seir_model import seir_model
 from seird_model import seird_model
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 
 # Определение маршрута для отображения страницы
